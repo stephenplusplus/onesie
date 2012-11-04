@@ -1,22 +1,19 @@
-var Onesie = (function(){
-    // Onesie.
-    var ActiveOnesie;
-    function Onesie (obj) {
-        ActiveOnesie = this;
-        this.fb = {
-            id: obj.fb_id,
-            fb_api_key:  obj.fb_api_key
-        };
+var $ee = (function(){
+    // $ee.
+    var Active$ee;
+    function $ee () {
+        Active$ee = this;
+        this.config = {};
     };
-    Onesie.prototype.share = function (obj) {
+    $ee.prototype.share = function (obj) {
         var service = obj.service || 'fb';
 
         Services[service](this);
     };
-    Onesie.prototype.Photo = function (obj) {
+    $ee.prototype.photo = function (obj) {
         return new Photo(obj);
     };
-    Onesie.prototype.Event = function (obj) {
+    $ee.prototype.event = function (obj) {
         return new Event(obj);
     };
 
@@ -25,8 +22,8 @@ var Onesie = (function(){
         var connect = {};
         connect.fb = function () {
             var fbInstance = FB;
-            var fb_id = ActiveOnesie.fb.fb_id;
-            var fb_api_key = ActiveOnesie.fb.fb_api_key;
+            var fb_id = Active$ee.config.fb.id;
+            var fb_api_key = Active$ee.config.fb.api_key;
 
             return fbInstance;
         };
@@ -47,7 +44,7 @@ var Onesie = (function(){
         Photos[obj.src] = this;
         this.src = obj.src;
     };
-    Photo.prototype.share = Onesie.prototype.share.bind(this);
+    Photo.prototype.share = $ee.prototype.share.bind(this);
     Photo.prototype.getWidth = function () {
         return 333;
     };
@@ -63,17 +60,16 @@ var Onesie = (function(){
         return this;
     };
 
-    return Onesie;
+    return new $ee;
 })();
 
-/* instantiate our Onesie. */
-var helper = new Onesie({
-    fb_id: 'blahblah',
-    fb_api_key: 'hblahb'
-});
+$ee.config.fb = {
+    id: 'blahblah',
+    api_key: 'blahblah'
+};
 
 /* let's create a new Photo helper to get additional functionality from just an image path. */
-var profilePic = helper.Photo({ src: 'path/to/image.jpg' });
+var profilePic = $ee.photo({ src: 'path/to/image.jpg' });
 var dimensions = profilePic.getDimensions(); // { width: 333, height: 111 }
 
 profilePic.share({ service: 'fb' });
